@@ -5,6 +5,7 @@ export interface Task {
     id: string,
     name: string,
     tries: number,
+    frequency: number,
     timeFrom: string,
     timeTo: string,
     weekSchedule: {

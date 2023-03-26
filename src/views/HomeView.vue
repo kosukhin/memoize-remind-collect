@@ -1,11 +1,22 @@
 <script setup lang="ts">
 import {useTasksStore} from "@/stores/tasks";
 import {storeToRefs} from "pinia";
+import {computed} from "vue";
 
 const tasksStore = useTasksStore();
 const {tasks, tasksCount} = storeToRefs(tasksStore);
 
+const tasksArr = computed(() => {
+  const arr = Object.values(tasks.value);
+  arr.reverse();
+  return arr;
+})
+
 const remove = (id: string) => {
+  if(!confirm('Вы уверены?')) {
+    return;
+  }
+
   tasksStore.removeTask(id);
 }
 </script>
@@ -25,11 +36,12 @@ const remove = (id: string) => {
         </v-card-text>
       </v-card>
       <div v-else>
-        <v-card class="mb-3" :key="task.id" v-for="task in tasks">
+        <v-card class="mb-3" :key="task.id" v-for="task in tasksArr">
           <v-card-title>{{ task.name }}</v-card-title>
           <v-card-text>
             c {{ task.timeFrom }} по {{ task.timeTo }},
-            Попыток: {{ task.tries }}
+            Попыток: {{ task.tries }},
+            Период напоминаний: {{ task.frequency }} минут
           </v-card-text>
           <v-card-text>
             <v-chip

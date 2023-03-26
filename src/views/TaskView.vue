@@ -11,6 +11,7 @@ const form = ref<Task>({
   timeTo: '',
   timeFrom: '',
   tries: 1,
+  frequency: 1,
   weekSchedule: {
     sun: false,
     mon: false,
@@ -61,6 +62,11 @@ const addTask = () => {
             v-model="form.tries"
             type="number"
             label="Повторов"
+        ></v-text-field>
+        <v-text-field
+            v-model="form.frequency"
+            type="number"
+            label="Частота, минут"
         ></v-text-field>
         <v-text-field
             type="time"
