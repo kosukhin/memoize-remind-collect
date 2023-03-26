@@ -1,7 +1,9 @@
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+import {createPinia, Store} from 'pinia'
 
+import '@/assets/main.css'
 import App from './App.vue'
+import localForage from "localforage";
 import router from './router'
 
 // Vuetify
@@ -15,9 +17,27 @@ const vuetify = createVuetify({
     directives,
 })
 
+localForage.config({
+    driver: localForage.INDEXEDDB,
+})
+
 const app = createApp(App)
 
-app.use(createPinia())
+async function indexDbPlugin({ store }: { store: Store }) {
+    const stored = await localForage.getItem(store.$id + '-state') as any
+    if (stored?.state) {
+        store.$patch(JSON.parse(stored.state))
+    }
+    store.$subscribe(() => {
+        localForage
+            .setItem(store.$id + '-state', { state: JSON.stringify(store.$state) })
+    })
+}
+
+const pinia = createPinia()
+pinia.use(indexDbPlugin)
+
+app.use(pinia)
 app.use(router)
 app.use(vuetify)
 
