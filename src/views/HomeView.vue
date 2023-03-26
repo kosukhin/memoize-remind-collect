@@ -4,7 +4,7 @@ import {storeToRefs} from "pinia";
 import {computed} from "vue";
 
 const tasksStore = useTasksStore();
-const {tasks, tasksCount} = storeToRefs(tasksStore);
+const {tasks, activeTasks, tasksCount} = storeToRefs(tasksStore);
 
 const tasksArr = computed(() => {
   const arr = Object.values(tasks.value);
@@ -36,6 +36,9 @@ const remove = (id: string) => {
         </v-card-text>
       </v-card>
       <div v-else>
+        <v-alert class="mb-2">
+          Активных задач: {{ activeTasks.length }}
+        </v-alert>
         <v-card class="mb-3" :key="task.id" v-for="task in tasksArr">
           <v-card-title>{{ task.name }}</v-card-title>
           <v-card-text>
@@ -59,6 +62,11 @@ const remove = (id: string) => {
                 size="small"
                 @click="$router.push({name: 'task', params: {id: task.id}})"
             >Редактировать</v-btn>
+            <v-btn
+                color="green"
+                size="small"
+                @click="$router.push({name: 'results', params: {id: task.id}})"
+            >Результаты</v-btn>
             <v-btn
                 color="red"
                 size="small"

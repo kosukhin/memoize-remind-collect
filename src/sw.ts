@@ -15,11 +15,11 @@ swListener.onmessage = function(e) {
 
     const tasks = JSON.parse(e.data.tasks) as Task[];
     const now = Math.round(Date.now() / 10000) * 10;
-    
-    Object.values(tasks).forEach(task => {
+
+    tasks.forEach(task => {
         const freq = task.frequency * 60;
 
-        console.log(now, freq);
+        console.log('task', now, freq);
         if (now % freq === 0) {
             self.registration.showNotification('Time for task', {
                 body: task.name,

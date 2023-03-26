@@ -1,5 +1,7 @@
-import {defineStore} from "pinia";
+import {defineStore, storeToRefs} from "pinia";
 import {computed, ref} from "vue";
+import {useResultsStore} from "@/stores/results";
+import {nowDay} from "@/utils/nowDay";
 
 export interface Task {
     id: string,
@@ -20,6 +22,8 @@ export interface Task {
 }
 
 export const useTasksStore = defineStore('tasks', () => {
+    const resultsStore = useResultsStore();
+    const {results} = storeToRefs(resultsStore);
     const tasks = ref<Record<string, Task>>({});
     const addTask = (task: Task) => {
         const id = Date.now();
@@ -30,9 +34,20 @@ export const useTasksStore = defineStore('tasks', () => {
         delete tasks.value[id];
     }
     const tasksCount = computed(() => Object.keys(tasks.value).length)
+    const activeTasks = computed(() => {
+        return Object.values(tasks.value).filter(task => {
+            const today = nowDay();
+            const todayResults = (results.value[task.id] ?? []).filter(res => {
+                return res.day === today;
+            });
+
+            return todayResults.length < task.tries;
+        })
+    })
 
     return {
         tasks,
+        activeTasks,
         tasksCount,
         addTask,
         removeTask,

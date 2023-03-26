@@ -52,10 +52,10 @@ setTimeout(() => {
     const swListener = new BroadcastChannel('swListener');
     swListener.onmessage = function(e) {
         if (e.data.type === 'get_tasks') {
-            const {tasks} = useTasksStore();
+            const {activeTasks} = useTasksStore();
             swListener.postMessage({
                 type: 'tasks',
-                tasks: JSON.stringify(tasks),
+                tasks: JSON.stringify(activeTasks),
             });
         }
     };

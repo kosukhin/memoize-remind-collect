@@ -85,7 +85,7 @@ const addTask = () => {
         <v-switch color="indigo" v-model="form.weekSchedule.fri" label="Пятница"></v-switch>
         <v-switch color="indigo" v-model="form.weekSchedule.sat" label="Суббота"></v-switch>
         <v-switch color="indigo" v-model="form.weekSchedule.sun" label="Воскресенье"></v-switch>
-        <v-btn type="submit" block class="mt-2">Сохранить</v-btn>
+        <v-btn color="green" type="submit" block class="mt-2">Сохранить</v-btn>
       </v-form>
     </v-card>
   </v-container>
