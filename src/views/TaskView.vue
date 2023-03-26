@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {Task, useTasksStore} from "@/stores/tasks";
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 
 const {params: {id}} = useRoute();
@@ -20,14 +20,18 @@ const form = ref<Task>({
     fri: false,
     sat: false,
   },
-  id: 0,
+  id: '0',
 });
 
 const task = tasksStore.tasks[id as string];
 
-if (task) {
-  form.value = JSON.parse(JSON.stringify(task));
-}
+watch(tasksStore, () => {
+  if (task) {
+    form.value = JSON.parse(JSON.stringify(task));
+  }
+}, {
+  immediate: true,
+});
 
 const addTask = () => {
   if (task) {
@@ -57,11 +61,18 @@ const addTask = () => {
             label="Название задачи"
         ></v-text-field>
         <v-text-field
-            v-model="form.timeTo"
+            v-model="form.tries"
+            type="number"
+            label="Повторов"
+        ></v-text-field>
+        <v-text-field
+            type="time"
+            v-model="form.timeFrom"
             label="Время с"
         ></v-text-field>
         <v-text-field
-            v-model="form.timeFrom"
+            type="time"
+            v-model="form.timeTo"
             label="Время по"
         ></v-text-field>
         <v-switch color="indigo" v-model="form.weekSchedule.mon" label="Понедельник"></v-switch>

@@ -28,7 +28,18 @@ const remove = (id: string) => {
         <v-card class="mb-3" :key="task.id" v-for="task in tasks">
           <v-card-title>{{ task.name }}</v-card-title>
           <v-card-text>
-            {{ task.timeFrom }} - {{ task.timeTo }}
+            c {{ task.timeFrom }} по {{ task.timeTo }},
+            Попыток: {{ task.tries }}
+          </v-card-text>
+          <v-card-text>
+            <v-chip
+                :color="active ? 'indigo' : 'black'"
+                class="mr-1"
+                :key="name"
+                v-for="(active, name) in task.weekSchedule"
+            >
+              {{ name }}
+            </v-chip>
           </v-card-text>
           <v-card-actions>
             <v-btn
