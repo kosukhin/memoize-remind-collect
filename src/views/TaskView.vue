@@ -51,10 +51,7 @@ const addTask = () => {
         color="indigo-darken-3"
     >Назад</v-btn>
     <v-card>
-      <v-card-title>Новая задача</v-card-title>
-      <v-card-text>
-        Чтобы добавить задачу нажмите "Добавить задачу"
-      </v-card-text>
+      <v-card-title>{{ form.name }}</v-card-title>
       <v-form class="form-padded" @submit.prevent="addTask">
         <v-text-field
             v-model="form.name"
