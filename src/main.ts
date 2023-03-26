@@ -11,6 +11,7 @@ import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
+import {useTasksStore} from "@/stores/tasks";
 
 const vuetify = createVuetify({
     components,
@@ -42,3 +43,20 @@ app.use(router)
 app.use(vuetify)
 
 app.mount('#app')
+
+setTimeout(() => {
+    if (Notification.permission !== 'granted') {
+        Notification.requestPermission();
+    }
+
+    const swListener = new BroadcastChannel('swListener');
+    swListener.onmessage = function(e) {
+        if (e.data.type === 'get_tasks') {
+            const {tasks} = useTasksStore();
+            swListener.postMessage({
+                type: 'tasks',
+                tasks: JSON.stringify(tasks),
+            });
+        }
+    };
+})
