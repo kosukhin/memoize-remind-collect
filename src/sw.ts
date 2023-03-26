@@ -1,4 +1,5 @@
 import { precacheAndRoute } from 'workbox-precaching'
+import type {Task} from "@/stores/tasks";
 declare let self: ServiceWorkerGlobalScope
 self.addEventListener('message', (event) => {
     if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting()
@@ -12,16 +13,22 @@ swListener.onmessage = function(e) {
         return;
     }
 
-    console.log('tasks in sw', e.data.tasks);
+    const tasks = JSON.parse(e.data.tasks) as Task[];
+    const now = Math.round(Date.now() / 10000) * 10;
+    
+    Object.values(tasks).forEach(task => {
+        const freq = task.frequency * 60;
+
+        console.log(now, freq);
+        if (now % freq === 0) {
+            self.registration.showNotification('Time for task', {
+                body: task.name,
+            })
+        }
+    })
 }
 
 setInterval(() => {
     console.log('from sw')
     swListener.postMessage({type: 'get_tasks'});
-    // if (false) {
-    //     self.registration.showNotification('My first spell', {
-    //         body: 'push body',
-    //     })
-    // }
-}, 10000)
-
+}, 10000);
