@@ -4,6 +4,10 @@ import {storeToRefs} from "pinia";
 
 const tasksStore = useTasksStore();
 const {tasks, tasksCount} = storeToRefs(tasksStore);
+
+const remove = (id: string) => {
+  tasksStore.removeTask(id);
+}
 </script>
 
 <template>
@@ -26,6 +30,18 @@ const {tasks, tasksCount} = storeToRefs(tasksStore);
           <v-card-text>
             {{ task.timeFrom }} - {{ task.timeTo }}
           </v-card-text>
+          <v-card-actions>
+            <v-btn
+                color="indigo-darken-3"
+                size="small"
+                @click="$router.push({name: 'task', params: {id: task.id}})"
+            >Редактировать</v-btn>
+            <v-btn
+                color="red"
+                size="small"
+                @click="remove(task.id)"
+            >Удалить</v-btn>
+          </v-card-actions>
         </v-card>
       </div>
     </v-container>

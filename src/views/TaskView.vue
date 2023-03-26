@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import {Task, useTasksStore} from "@/stores/tasks";
 import {ref} from "vue";
-import {useRouter} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 
+const {params: {id}} = useRoute();
 const {push} = useRouter();
 const tasksStore = useTasksStore();
 const form = ref<Task>({
@@ -21,7 +22,18 @@ const form = ref<Task>({
   },
   id: 0,
 });
+
+const task = tasksStore.tasks[id as string];
+
+if (task) {
+  form.value = JSON.parse(JSON.stringify(task));
+}
+
 const addTask = () => {
+  if (task) {
+    tasksStore.removeTask(task.id);
+  }
+
   tasksStore.addTask(form.value);
   push('/')
 }
@@ -39,7 +51,7 @@ const addTask = () => {
       <v-card-text>
         Чтобы добавить задачу нажмите "Добавить задачу"
       </v-card-text>
-      <v-form @submit.prevent="addTask">
+      <v-form class="form-padded" @submit.prevent="addTask">
         <v-text-field
             v-model="form.name"
             label="Название задачи"

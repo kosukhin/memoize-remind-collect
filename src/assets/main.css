@@ -1,3 +1,10 @@
+body {
+    background: #eeeeee;
+}
 .v-container {
     max-width: 500px;
+}
+
+.form-padded {
+    padding: 0 16px 16px;
 }
