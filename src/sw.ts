@@ -8,22 +8,35 @@ precacheAndRoute(self.__WB_MANIFEST)
 
 const swListener = new BroadcastChannel('swListener');
 
+const taskDates: Record<string, Date> = {}
+
 swListener.onmessage = function(e) {
     if (e.data.type !== 'tasks') {
         return;
     }
 
     const tasks = JSON.parse(e.data.tasks) as Task[];
-    const now = Math.round(Date.now() / 10000) * 10;
+    const notify = (task: Task) => {
+        self.registration.showNotification('Time for task', {
+            body: task.name,
+        });
+    }
 
     tasks.forEach(task => {
-        const freq = task.frequency * 60;
+        let lastDate = taskDates[task.id];
 
-        console.log('task', now, freq);
-        if (now % freq === 0) {
-            self.registration.showNotification('Time for task', {
-                body: task.name,
-            })
+        if (!lastDate) {
+            lastDate = new Date();
+            taskDates[task.id] = lastDate;
+        }
+
+        const now = new Date();
+
+        if (lastDate < now) {
+            taskDates[task.id] = new Date(
+                lastDate.getTime() + task.frequency*60000
+            );
+            notify(task);
         }
     })
 }

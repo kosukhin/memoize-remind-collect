@@ -52,6 +52,7 @@ setTimeout(() => {
     const swListener = new BroadcastChannel('swListener');
     swListener.onmessage = function(e) {
         if (e.data.type === 'get_tasks') {
+            console.log('tasks')
             const {activeTasks} = useTasksStore();
             swListener.postMessage({
                 type: 'tasks',
