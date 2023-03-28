@@ -21,10 +21,13 @@ export interface Task {
     },
 }
 
+export type TaskDates = Record<string, {lastDate: Date, nextDate: Date}>;
+
 export const useTasksStore = defineStore('tasks', () => {
     const resultsStore = useResultsStore();
     const {results} = storeToRefs(resultsStore);
     const tasks = ref<Record<string, Task>>({});
+    const taskDates = ref<TaskDates>({});
     const addTask = (task: Task) => {
         const id = Date.now();
         task.id = id.toString();
@@ -51,6 +54,7 @@ export const useTasksStore = defineStore('tasks', () => {
     return {
         tasks,
         activeTasks,
+        taskDates,
         tasksCount,
         addTask,
         updateTask,

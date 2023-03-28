@@ -4,7 +4,7 @@ import {storeToRefs} from "pinia";
 import {computed} from "vue";
 
 const tasksStore = useTasksStore();
-const {tasks, activeTasks, tasksCount} = storeToRefs(tasksStore);
+const {tasks, activeTasks, tasksCount, taskDates} = storeToRefs(tasksStore);
 
 const tasksArr = computed(() => {
   const arr = Object.values(tasks.value);
@@ -36,6 +36,10 @@ const remove = (id: string) => {
         </v-card-text>
       </v-card>
       <div v-else>
+        <h3>Следующий запуск</h3>
+        <div v-for="(task, taskId) in taskDates">
+          {{ tasks[taskId].name }}: {{ (new Date(task.nextDate)).toLocaleString() }}
+        </div>
         <v-alert class="mb-2">
           Активных задач: {{ activeTasks.length }}
         </v-alert>
