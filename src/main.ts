@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import {createPinia, Store} from 'pinia'
+import {createPinia, Store, storeToRefs} from 'pinia'
 
 import '@/assets/main.css'
 import App from './App.vue'
@@ -11,7 +11,7 @@ import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
-import {useTasksStore} from "@/stores/tasks";
+import {TaskDates, useTasksStore} from "@/stores/tasks";
 
 const vuetify = createVuetify({
     components,
@@ -49,14 +49,20 @@ setTimeout(() => {
         Notification.requestPermission();
     }
 
+    const tasksStore = useTasksStore();
+    const {activeTasks, taskDates} = storeToRefs(tasksStore);
+
     const swListener = new BroadcastChannel('swListener');
     swListener.onmessage = function(e) {
+        if (e.data.type === 'sw_task_dates') {
+            taskDates.value = e.data.taskDates as TaskDates;
+            return;
+        }
+
         if (e.data.type === 'get_tasks') {
-            console.log('tasks')
-            const {activeTasks} = useTasksStore();
             swListener.postMessage({
                 type: 'tasks',
-                tasks: JSON.stringify(activeTasks),
+                tasks: JSON.stringify(activeTasks.value),
             });
         }
     };

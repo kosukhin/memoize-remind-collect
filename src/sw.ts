@@ -8,7 +8,7 @@ precacheAndRoute(self.__WB_MANIFEST)
 
 const swListener = new BroadcastChannel('swListener');
 
-const taskDates: Record<string, Date> = {}
+const taskDates: Record<string, {lastDate: Date, nextDate: Date}> = {}
 
 swListener.onmessage = function(e) {
     if (e.data.type !== 'tasks') {
@@ -22,26 +22,30 @@ swListener.onmessage = function(e) {
         });
     }
 
+    swListener.postMessage({
+        type: 'sw_task_dates',
+        taskDates,
+    });
+
     tasks.forEach(task => {
-        let lastDate = taskDates[task.id];
-
-        if (!lastDate) {
-            lastDate = new Date();
-            taskDates[task.id] = lastDate;
-        }
-
+        const taskDate = taskDates[task.id];
         const now = new Date();
 
-        if (lastDate < now) {
-            taskDates[task.id] = new Date(
-                lastDate.getTime() + task.frequency*60000
-            );
+        if (!taskDate) {
+            taskDates[task.id] = {
+                lastDate: now,
+                nextDate: new Date(now.getTime() + task.frequency * 60000)
+            };
+        }
+
+        if (taskDates[task.id].lastDate < now) {
+            taskDates[task.id].lastDate = taskDates[task.id].nextDate;
+            taskDates[task.id].nextDate = new Date(now.getTime() + task.frequency * 60000);
             notify(task);
         }
     })
 }
 
 setInterval(() => {
-    console.log('from sw')
     swListener.postMessage({type: 'get_tasks'});
 }, 10000);
