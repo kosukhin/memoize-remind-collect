@@ -30,6 +30,9 @@ export const useTasksStore = defineStore('tasks', () => {
         task.id = id.toString();
         tasks.value[id] = task;
     }
+    const updateTask = (taskId: string, task: Task) => {
+        tasks.value[taskId] = task;
+    }
     const removeTask = (id: string) => {
         delete tasks.value[id];
     }
@@ -50,6 +53,7 @@ export const useTasksStore = defineStore('tasks', () => {
         activeTasks,
         tasksCount,
         addTask,
+        updateTask,
         removeTask,
     }
 });

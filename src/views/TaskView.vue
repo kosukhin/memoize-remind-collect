@@ -36,10 +36,11 @@ watch(tasksStore, () => {
 
 const addTask = () => {
   if (task) {
-    tasksStore.removeTask(task.id);
+    tasksStore.updateTask(task.id, form.value);
+  } else {
+    tasksStore.addTask(form.value);
   }
 
-  tasksStore.addTask(form.value);
   push('/')
 }
 </script>
