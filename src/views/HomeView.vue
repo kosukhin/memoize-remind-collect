@@ -38,7 +38,9 @@ const remove = (id: string) => {
       <div v-else>
         <h3>Следующий запуск</h3>
         <div v-for="(task, taskId) in taskDates">
-          {{ tasks[taskId].name }}: {{ (new Date(task.nextDate)).toLocaleString() }}
+          <span v-if="tasks[taskId]">
+            {{ tasks[taskId].name }}: {{ (new Date(task.nextDate)).toLocaleString() }}
+          </span>
         </div>
         <v-alert class="mb-2">
           Активных задач: {{ activeTasks.length }}
