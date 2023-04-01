@@ -69,23 +69,7 @@ const addTask = () => {
             type="number"
             label="Частота, минут"
         ></v-text-field>
-        <v-text-field
-            type="time"
-            v-model="form.timeFrom"
-            label="Время с"
-        ></v-text-field>
-        <v-text-field
-            type="time"
-            v-model="form.timeTo"
-            label="Время по"
-        ></v-text-field>
-        <v-switch color="indigo" v-model="form.weekSchedule.mon" label="Понедельник"></v-switch>
-        <v-switch color="indigo" v-model="form.weekSchedule.tue" label="Вторник"></v-switch>
-        <v-switch color="indigo" v-model="form.weekSchedule.wen" label="Среда"></v-switch>
-        <v-switch color="indigo" v-model="form.weekSchedule.thi" label="Четверг"></v-switch>
-        <v-switch color="indigo" v-model="form.weekSchedule.fri" label="Пятница"></v-switch>
-        <v-switch color="indigo" v-model="form.weekSchedule.sat" label="Суббота"></v-switch>
-        <v-switch color="indigo" v-model="form.weekSchedule.sun" label="Воскресенье"></v-switch>
+
         <v-btn color="green" type="submit" block class="mt-2">Сохранить</v-btn>
       </v-form>
     </v-card>

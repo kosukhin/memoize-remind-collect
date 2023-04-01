@@ -17,7 +17,7 @@ swListener.onmessage = function(e) {
 
     const tasks = JSON.parse(e.data.tasks) as Task[];
     const notify = (task: Task) => {
-        self.registration.showNotification('Time for task', {
+        self.registration.showNotification('Выполни задачу', {
             body: task.name,
         });
     }
@@ -27,22 +27,29 @@ swListener.onmessage = function(e) {
         taskDates,
     });
 
+    const createNextDate = (task: Task) => {
+        return new Date((new Date()).getTime() + task.frequency * 60000)
+    }
+
     tasks.forEach(task => {
-        const taskDate = taskDates[task.id];
         const now = new Date();
 
-        if (!taskDate) {
+        if (!taskDates[task.id]) {
             taskDates[task.id] = {
                 lastDate: now,
-                nextDate: new Date(now.getTime() + task.frequency * 60000)
+                nextDate: createNextDate(task)
             };
         }
 
-        if (taskDates[task.id].lastDate < now) {
-            taskDates[task.id].lastDate = taskDates[task.id].nextDate;
-            taskDates[task.id].nextDate = new Date(now.getTime() + task.frequency * 60000);
+        const taskDate = taskDates[task.id];
+
+        if (taskDate.nextDate < now) {
+            taskDate.lastDate = taskDate.nextDate;
+            taskDate.nextDate = createNextDate(task)
             notify(task);
         }
+
+        console.log('v2', taskDate);
     })
 }
 

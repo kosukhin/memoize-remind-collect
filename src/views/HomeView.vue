@@ -37,7 +37,7 @@ const remove = (id: string) => {
       </v-card>
       <div v-else>
         <h3>Следующий запуск</h3>
-        <div v-for="(task, taskId) in taskDates">
+        <div :key="taskId" v-for="(task, taskId) in taskDates">
           <span v-if="tasks[taskId]">
             {{ tasks[taskId].name }}: {{ (new Date(task.nextDate)).toLocaleString() }}
           </span>
@@ -48,19 +48,8 @@ const remove = (id: string) => {
         <v-card class="mb-3" :key="task.id" v-for="task in tasksArr">
           <v-card-title>{{ task.name }}</v-card-title>
           <v-card-text>
-            c {{ task.timeFrom }} по {{ task.timeTo }},
             Попыток: {{ task.tries }},
             Период напоминаний: {{ task.frequency }} минут
-          </v-card-text>
-          <v-card-text>
-            <v-chip
-                :color="active ? 'indigo' : 'black'"
-                class="mr-1"
-                :key="name"
-                v-for="(active, name) in task.weekSchedule"
-            >
-              {{ name }}
-            </v-chip>
           </v-card-text>
           <v-card-actions>
             <v-btn
