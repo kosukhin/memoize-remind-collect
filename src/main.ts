@@ -11,7 +11,7 @@ import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
-import {TaskDates, useTasksStore} from "@/stores/tasks";
+import {Task, TaskDates, useTasksStore} from "@/stores/tasks";
 
 const vuetify = createVuetify({
     components,
@@ -44,6 +44,10 @@ app.use(vuetify)
 
 app.mount('#app')
 
+const showNotification = (message: string) => {
+    new Notification('Time for task', {body: message})
+}
+
 setTimeout(() => {
     if (Notification.permission !== 'granted') {
         Notification.requestPermission();
@@ -51,19 +55,33 @@ setTimeout(() => {
 
     const tasksStore = useTasksStore();
     const {activeTasks, taskDates} = storeToRefs(tasksStore);
+    taskDates.value = {};
 
-    const swListener = new BroadcastChannel('swListener');
-    swListener.onmessage = function(e) {
-        if (e.data.type === 'sw_task_dates') {
-            taskDates.value = e.data.taskDates as TaskDates;
-            return;
-        }
+    const createNextDate = (task: Task) => {
+        return new Date((new Date()).getTime() + task.frequency * 60000)
+    }
 
-        if (e.data.type === 'get_tasks') {
-            swListener.postMessage({
-                type: 'tasks',
-                tasks: JSON.stringify(activeTasks.value),
-            });
-        }
-    };
+    setInterval(() => {
+        activeTasks.value.forEach(task => {
+            const now = new Date();
+
+            if (!taskDates.value[task.id]) {
+                taskDates.value[task.id] = {
+                    counter: 1,
+                    lastDate: now,
+                    nextDate: createNextDate(task)
+                };
+            }
+
+            const taskDate = taskDates.value[task.id];
+            taskDate.counter += 1;
+
+            if (new Date(taskDate.nextDate) < now) {
+                taskDate.counter = 0;
+                taskDate.lastDate = taskDate.nextDate;
+                taskDate.nextDate = createNextDate(task)
+                showNotification(task.name);
+            }
+        })
+    }, 10000)
 })

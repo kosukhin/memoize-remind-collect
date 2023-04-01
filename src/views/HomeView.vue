@@ -39,7 +39,7 @@ const remove = (id: string) => {
         <h3>Следующий запуск</h3>
         <div :key="taskId" v-for="(task, taskId) in taskDates">
           <span v-if="tasks[taskId]">
-            {{ tasks[taskId].name }}: {{ (new Date(task.nextDate)).toLocaleString() }}
+            {{ tasks[taskId].name }}: {{ (new Date(task.nextDate)).toLocaleString() }}, repeats: {{ task.counter }}
           </span>
         </div>
         <v-alert class="mb-2">

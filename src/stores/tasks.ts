@@ -21,7 +21,7 @@ export interface Task {
     },
 }
 
-export type TaskDates = Record<string, {lastDate: Date, nextDate: Date}>;
+export type TaskDates = Record<string, {lastDate: Date, nextDate: Date, counter: number}>;
 
 export const useTasksStore = defineStore('tasks', () => {
     const resultsStore = useResultsStore();
